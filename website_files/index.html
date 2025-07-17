@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Scheduling Agent Prompt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        ol {
+            list-style-type: decimal;
+            margin-left: 20px;
+        }
+        code {
+            background-color: #e2e2e2;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Prompt: AI Scheduling Agent</h1>
+        <h2>1. Introduction</h2>
+        <p>This prompt outlines the requirements for developing an intelligent AI scheduling agent designed to streamline personal and professional organization. The agent will autonomously review and categorize incoming communications from various sources, including emails, WhatsApp messages, and other text-based messages. Its primary function is to identify scheduling-related information, extract key details, and then proactively create or update events and reminders in the user's Google Calendar, which is linked to their Android phone. The goal is to provide a seamless, hands-free scheduling experience, reducing manual effort and ensuring timely reminders for important commitments.</p>
+        <h2>2. Agent Core Capabilities</h2>
+        <h3>2.1. Communication Ingestion and Normalization</h3>
+        <ul>
+            <li><strong>Email Processing:</strong> The agent must be able to securely access and process emails from common providers (e.g., Gmail, Outlook). This involves fetching email content, including sender, subject, body, and attachments (if relevant for scheduling). It should support standard protocols (IMAP/POP3) or leverage specific APIs (e.g., Gmail API, Microsoft Graph API) for efficient and real-time access. OAuth 2.0 must be implemented for secure user authentication and authorization.</li>
+            <li><strong>WhatsApp Message Processing:</strong> The agent will integrate with the WhatsApp Business Platform API to receive and send messages. It must be configured to receive real-time notifications for incoming messages via webhooks. The agent should primarily focus on text-based messages for scheduling purposes, but the architecture should allow for future expansion to handle other media types if necessary.</li>
+            <li><strong>Other Message Sources (Extensibility):</strong> The system design must be modular and extensible to allow for easy integration of other text-based messaging platforms (e.g., SMS, other chat applications) in the future. All incoming communications, regardless of their origin, must be normalized into a consistent internal format for subsequent processing.</li>
+        </ul>
+        <h3>2.2. Natural Language Processing (NLP) and Information Extraction</h3>
+        <ul>
+            <li><strong>Named Entity Recognition (NER):</strong> The agent must accurately identify and extract critical scheduling entities from unstructured text. This includes, but is not limited to:
+                <ul>
+                    <li><strong>Dates:</strong> Specific dates (e.g., 'next Monday', 'July 25th, 2025'), relative dates (e.g., 'tomorrow', 'in two weeks').</li>
+                    <li><strong>Times:</strong> Specific times (e.g., '3 PM', '14:00'), time ranges (e.g., 'from 9 to 5'), and time zones.</li>
+                    <li><strong>Durations:</strong> Length of events (e.g., 'one hour', '30 minutes').</li>
+                    <li><strong>Locations:</strong> Physical addresses, meeting room names, or virtual meeting links.</li>
+                    <li><strong>Event Titles/Descriptions:</strong> The main topic or purpose of the scheduled item.</li>
+                    <li><strong>Attendees:</strong> Names or email addresses of individuals to be invited to an event.</li>
+                    <li><strong>Action Items/Tasks:</strong> Specific tasks or reminders mentioned within the communication.</li>
+                </ul>
+            </li>
+            <li><strong>Intent Recognition:</strong> The agent must accurately determine the user’s intent behind the communication. Examples of intents include:
+                <ul>
+                    <li>Scheduling a new meeting or appointment.</li>
+                    <li>Setting a personal reminder.</li>
+                    <li>Requesting a reschedule or cancellation of an existing event.</li>
+                    <li>Confirming attendance.</li>
+                    <li>General informational queries (which should be handled gracefully or flagged as non-scheduling related).</li>
+                </ul>
+            </li>
+            <li><strong>Categorization:</strong> The agent should be able to categorize incoming communications based on their content and inferred intent (e.g., ‘work meeting request’, ‘personal reminder’, ‘family event’, ‘urgent action required’, ‘informational only’). This categorization can be used for prioritization and filtering.</li>
+            <li><strong>Summarization (Optional but Recommended):</strong> For longer emails or message threads, the agent should be able to generate a concise summary of the key points, especially those related to scheduling.</li>
+        </ul>
+        <h3>2.3. Scheduling and Logic Engine</h3>
+        <ul>
+            <li><strong>Event Formulation:</strong> Based on the extracted entities and recognized intent, the agent must construct a complete calendar event object, including title, start time, end time, location, and attendees.</li>
+            <li><strong>Conflict Detection and Resolution:</strong> Before adding a new event, the agent must check the user’s calendar for potential time conflicts. If a conflict is detected, the agent should:
+                <ul>
+                    <li>Attempt to suggest alternative available times.</li>
+                    <li>Notify the user about the conflict and propose options for resolution (e.g., “There’s a conflict with X. Would you like to reschedule, or should I proceed anyway?”).</li>
+                    <li>Allow for user-defined rules to prioritize certain types of events over others.</li>
+                </ul>
+            </li>
+            <li><strong>Reminder Management:</strong> The agent must be able to set reminders for events based on extracted information (e.g., “remind me 15 minutes before”) or user-defined default preferences. This includes support for multiple reminders per event.</li>
+            <li><strong>User Preferences and Rules:</strong> The agent should be able to learn and apply user-specific preferences (e.g., default meeting duration, preferred working hours, automatic acceptance/rejection rules for certain senders or event types). This requires a mechanism to store and retrieve these preferences.</li>
+        </ul>
+        <h3>2.4. Calendar Integration</h3>
+        <ul>
+            <li><strong>Google Calendar API Integration:</strong> The agent will primarily interact with the user’s Google Calendar via the Google Calendar API. This is crucial for ensuring seamless synchronization with the user’s Android phone and other devices linked to their Google account.</li>
+            <li><strong>CRUD Operations:</strong> The agent must support the following operations on Google Calendar:
+                <ul>
+                    <li><strong>Create:</strong> Add new events, including all relevant details (title, time, location, attendees, description, reminders).</li>
+                    <li><strong>Read:</strong> Query existing events to check availability, retrieve event details, or list upcoming appointments.</li>
+                    <li><strong>Update:</strong> Modify details of existing events (e.g., change time, add/remove attendees, update location).</li>
+                    <li><strong>Delete:</strong> Remove events from the calendar.</li>
+                </ul>
+            </li>
+            <li><strong>Authentication:</strong> Secure authentication and authorization with Google Calendar using OAuth 2.0. The agent should handle token refresh and re-authentication gracefully.</li>
+        </ul>
+        <h3>2.5. User Notification and Feedback</h3>
+        <ul>
+            <li><strong>Confirmation Messages:</strong> Send clear and concise confirmation messages to the user after successfully scheduling an event or setting a reminder. These confirmations should include key details of the scheduled item.</li>
+            <li><strong>Clarification Requests:</strong> If the agent encounters ambiguity or requires additional information to schedule an event, it must send a clarification request to the user (e.g., “Which date are you referring to?”, “Please specify the duration of the meeting.”).</li>
+            <li><strong>Conflict Notifications:</strong> Inform the user about any detected scheduling conflicts and the proposed resolution or options.</li>
+            <li><strong>Channel Consistency:</strong> Notifications and feedback should ideally be sent back to the user via the same communication channel from which the original request was received (e.g., WhatsApp for WhatsApp messages, email for emails).</li>
+        </ul>
+        <h2>3. Technical Implementation Guidelines</h2>
+        <ul>
+            <li><strong>Modularity:</strong> The agent should be built with a modular architecture, allowing for independent development, testing, and deployment of components (e.g., communication handlers, NLP engine, scheduling logic, calendar integration).</li>
+            <li><strong>Scalability:</strong> The design should consider scalability to handle a growing volume of communications and users. Cloud-native approaches (e.g., serverless functions, containerization) are encouraged.</li>
+            <li><strong>Security and Privacy:</strong> Robust security measures must be implemented, including data encryption (in transit and at rest), secure API key management, and adherence to relevant data privacy regulations (e.g., GDPR, CCPA). User data must be handled with utmost care and only used for its intended purpose.</li>
+            <li><strong>Error Handling and Logging:</strong> Comprehensive error handling and logging mechanisms are essential for debugging, monitoring, and maintaining the agent’s reliability.</li>
+            <li><strong>Technology Stack Recommendations:</strong>
+                <ul>
+                    <li><strong>Backend:</strong> Python is highly recommended due to its rich ecosystem of AI/ML and NLP libraries (e.g., LangChain, AutoGen, spaCy, Hugging Face Transformers).</li>
+                    <li><strong>NLP/AI:</strong> Leverage advanced Large Language Models (LLMs) for core NLP tasks (NER, intent recognition, categorization, summarization). Consider using APIs from providers like OpenAI or open-source LLMs.</li>
+                    <li><strong>APIs:</strong> Google Calendar API, WhatsApp Business Platform API, and relevant email APIs (e.g., Gmail API, Microsoft Graph API).</li>
+                    <li><strong>Database:</strong> A suitable database for storing user preferences, agent state, and potentially processed message metadata.</li>
+                </ul>
+            </li>
+        </ul>
+        <h2>4. Data Flow Overview</h2>
+        <ol>
+            <li><strong>Ingestion:</strong> Incoming email, WhatsApp, or other messages are received by the Communication Ingestion Layer.</li>
+            <li><strong>Normalization:</strong> Messages are converted into a standardized format.</li>
+            <li><strong>NLP Processing:</strong> The NLP and Information Extraction Engine processes the normalized message to identify intent, extract entities, and categorize content.</li>
+            <li><strong>Scheduling Logic:</strong> The Scheduling and Logic Engine receives the extracted information, applies user preferences and rules, and checks for calendar conflicts via the Calendar Integration Layer.</li>
+            <li><strong>Calendar Action:</strong> The Calendar Integration Layer interacts with the Google Calendar API to create, update, or delete events/reminders.</li>
+            <li><strong>Feedback:</strong> The User Notification and Feedback component sends confirmations, clarifications, or conflict alerts back to the user.</li>
+        </ol>
+        <h2>5. Deliverables</h2>
+        <p>The final output should be a detailed design document or a functional prototype demonstrating the core capabilities outlined above. The prompt itself serves as the foundational specification for this development.</p>
+        <p>This prompt provides a comprehensive guide for building an AI scheduling agent that integrates seamlessly with email, WhatsApp, and Android-linked calendars, offering an intelligent and automated approach to personal and professional scheduling.</p>
+    </div>
+</body>
+</html>
+
